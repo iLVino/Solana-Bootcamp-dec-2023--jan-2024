@@ -16,7 +16,7 @@ def main():
              result = process_line(line)
 
              total_sum += result
-
+            
             print("Total sum", total_sum)
 if __name__ == "__main__":
     main()
