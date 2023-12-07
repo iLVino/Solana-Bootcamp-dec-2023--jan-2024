@@ -1,50 +1,32 @@
 import re
-from word2number import w2n
 
-def extract_first_and_last(line):
-    # Use regular expression to find all numeric values and digits in the line
-    numbers = re.findall(r'\b(?:zero|one|two|three|four|five|six|seven|eight|nine|[0-9])+\b', line)
+file = open('input.txt', 'r')
+lines = [line.rstrip() for line in file]
+digits = {'zero':0, 'one':1, 'two':2, 'three':3, 'four':4, 'five':5, 'six':6, 'seven':7, 'eight':8, 'nine':9}
+totPart1 = 0 
+totPart2 = 0 
 
-    # Check if there are any numeric values in the line
-    if numbers:
-        # Find the first and last numeric values or digits
-        first_element = numbers[0]
-        last_element = numbers[-1]
+def part1(lines):
+	somma = 0
+	for line in lines:
+		num = [c for c in line if c.isnumeric()]
+		somma += int(num[0]+num[-1])
+	return somma
 
-        # Extract only the leading numeric part from the elements
-        first_element_numeric = re.search(r'(?:zero|one|two|three|four|five|six|seven|eight|nine|[0-9])+', first_element).group()
-        last_element_numeric = re.search(r'(?:zero|one|two|three|four|five|six|seven|eight|nine|[0-9])+', last_element).group()
+def part2(lines):
+	somma = 0
+	r = r'(?=(one|two|three|four|five|six|seven|eight|nine|\d))'
+	pattern = re.compile(r)
+	for line in lines:
+		words = []
+		for word in pattern.findall(line):
+			if(word in digits):
+				words.append(str(digits[word]))
+			else: words.append(word)			
+		somma += int(words[0]+words[-1])
+	return somma
 
-        # Convert the numeric parts to integers
-        first_value = w2n.word_to_num(first_element_numeric) if first_element.isalpha() else int(re.search(r'[0-9]+', first_element_numeric).group())
-        last_value = w2n.word_to_num(last_element_numeric) if last_element.isalpha() else int(re.search(r'[0-9]+', last_element_numeric).group())
-
-        return first_value, last_value
-
-    return None, None
-
-def main():
-    # Open the input file for reading
-    with open('input.txt', 'r') as file:
-        # Initialize a variable to store the sum of first and last values
-        total_sum = 0
-
-        # Read each line and process it
-        for line in file:
-            line = line.strip()  # Remove leading and trailing whitespaces
-            first_value, last_value = extract_first_and_last(line)
-
-            # Check if both first and last values are found
-            if first_value is not None and last_value is not None:
-                # Combine the values and add to the total sum
-                combined_value = first_value + last_value
-                total_sum += combined_value
-
-                # Print the results for each line
-                print(f"Line: {line}, First: {first_value}, Last: {last_value}, Combined: {combined_value}")
-
-        # Print the total sum of combined values
-        print("Total Sum:", total_sum)
-
-if __name__ == "__main__":
-    main()
+totPart1 = part1(lines)
+totPart2 = part2(lines)
+print("part1: ", totPart1)
+print("part2: ", totPart2)
